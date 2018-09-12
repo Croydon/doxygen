@@ -8,6 +8,14 @@ compiler:
   - clang
 sudo: required
 
+cache:
+    directories:
+        - $HOME/.cache/pip
+        - /Library/TeX/texbin
+        - /Users/travis/Library/TeX/texbin
+    before_cache:
+        - rm -f $HOME/.cache/pip/log/debug.log
+
 addons:
     apt:
         update: true
@@ -29,20 +37,22 @@ jobs:
 
 before_script:
     - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then
-        pip install --quiet conan;
+        pip install --quiet -U conan;
         export HOMEBREW_NO_AUTO_UPDATE=1;
         brew install ghostscript;
 
-        travis_wait brew cask install mactex-no-gui;
-        curl -O -L http://mirrors.ctan.org/support/epstopdf.zip;
-        unzip epstopdf.zip;
-        cd epstopdf;
-        chmod a+x epstopdf.pl;
-        mv epstopdf.pl epstopdf;
-        mkdir -p /Users/travis/Library/TeX/texbin/;
-        mv epstopdf /Users/travis/Library/TeX/texbin/;
-        cd .. ;
-        rm -rf epstopdf*;
+        if [ ! -d "/Library/TeX/texbin" ]; then
+            travis_wait brew cask install mactex-no-gui;
+            curl -O -L http://mirrors.ctan.org/support/epstopdf.zip;
+            unzip epstopdf.zip;
+            cd epstopdf;
+            chmod a+x epstopdf.pl;
+            mv epstopdf.pl epstopdf;
+            mkdir -p /Users/travis/Library/TeX/texbin/;
+            mv epstopdf /Users/travis/Library/TeX/texbin/;
+            cd .. ;
+            rm -rf epstopdf*;
+        fi;
         export PATH=/Users/travis/Library/TeX/texbin:/Library/TeX/texbin:$PATH;
 
         conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan;
