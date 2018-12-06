@@ -31,8 +31,8 @@ before_script:
         conanQtOptions="";
       fi;
       if [ "${TRAVIS_OS_NAME}" == "osx" ]; then
-        conanQt="Qt/5.11.1@bincrafters/stable";
-        conanQtOptions="Qt:shared=False";
+        conanQt="qt/5.11.3@bincrafters/stable";
+        conanQtOptions="qt:shared=False";
       fi;
     - if [ "${TRAVIS_OS_NAME}" == "linux" ] || [ "${TRAVIS_OS_NAME}" == "linux-ppc64le" ]; then
         pip install --quiet --user conan;
