@@ -63,7 +63,7 @@ before_script:
         bzip2/1.0.8
         libxml2/2.9.9@bincrafters/stable
         libiconv/1.15@bincrafters/stable
-        qt/5.13.1@bincrafters/stable
+        qt/5.12.5@bincrafters/stable
         bison/3.3.2@bincrafters/stable 
         [options]
         qt:shared=True" >> conanfile.txt;
