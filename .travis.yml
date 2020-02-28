@@ -65,16 +65,14 @@ jobs:
       compiler: gcc
     - <<: *linux-s390x
       compiler: clang
-#   - os: osx
-#     compiler: clang
-#     addons:
-#       homebrew:
-#         packages:
-#           - ghostscript
-#           - bison
-#           - flex
-#         casks:
-#           - mactex-no-gui
+    - os: osx
+      compiler: clang
+      addons:
+        homebrew:
+          packages:
+            - ghostscript
+          casks:
+            - mactex-no-gui
 
 before_script:
   - |
