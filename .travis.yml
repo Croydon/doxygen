@@ -80,14 +80,14 @@ before_script:
     - |
       if [ "${TRAVIS_OS_NAME}" == "linux" ] && [ ! "${OS_NAME}" == "linux-ppc64le" ] && [ ! "${OS_NAME}" == "linux-s390x" ]; then
         printf "[requires]
-        libxml2/2.9.9@bincrafters/stable
-        libiconv/1.15@bincrafters/stable" >> conanfile.txt;
+        libxml2/2.9.9
+        libiconv/1.15" >> conanfile.txt;
       fi;
       if [ "${TRAVIS_OS_NAME}" == "osx" ]; then
         printf "[requires]
-        bzip2/1.0.8@bincrafters/stable
-        libxml2/2.9.9@bincrafters/stable
-        libiconv/1.15@bincrafters/stable
+        bzip2/1.0.8
+        libxml2/2.9.9
+        libiconv/1.15
         qt/5.12.0@bincrafters/stable
         bison/3.3.2@bincrafters/stable 
         [options]
