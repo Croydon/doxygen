@@ -71,7 +71,7 @@ before_script:
       printf "[requires]
       libxml2/2.9.9
       libiconv/1.15
-      bison/3.4.1@bincrafters/stable
+      bison/3.3.2@bincrafters/stable
       flex/2.6.4@bincrafters/stable" >> conanfile.txt;
       pip install --quiet --user conan;
       conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan;
