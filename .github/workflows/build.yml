@@ -21,19 +21,19 @@ jobs:
           libxml2/2.9.9
           libiconv/1.15
           qt/5.12.7@bincrafters/stable
-          bison/3.3.2@bincrafters/stable 
+          bison/3.3.2@bincrafters/stable
           [options]
           qt:shared=True" >> conanfile.txt;
           curl -O -L http://mirrors.ctan.org/support/epstopdf.zip
           unzip epstopdf.zip
-          mkdir -p /Users/travis/Library/TeX/texbin/
-          mv epstopdf/epstopdf.pl /Users/travis/Library/TeX/texbin/epstopdf
-          chmod a+x /Users/travis/Library/TeX/texbin/epstopdf
+          mkdir -p ~/Library/TeX/texbin/
+          mv epstopdf/epstopdf.pl ~/Library/TeX/texbin/epstopdf
+          chmod a+x ~/Library/TeX/texbin/epstopdf
           rm -rf epstopdf*
           conan install . -g virtualrunenv --build missing --update;
       - name: Build Doxygen
         run: |
-          export PATH="/Users/travis/Library/TeX/texbin:/Library/TeX/texbin:$PATH"
+          export PATH="~/Library/TeX/texbin:/Library/TeX/texbin:$PATH"
           source activate_run.sh
           mkdir build
           cd build
