@@ -65,48 +65,16 @@ jobs:
       compiler: gcc
     - <<: *linux-s390x
       compiler: clang
-    - os: osx
-      compiler: clang
-      addons:
-        homebrew:
-          packages:
-            - ghostscript
-          casks:
-            - mactex-no-gui
 
 before_script:
   - |
-    if [ "${TRAVIS_OS_NAME}" == "linux" ] && [ ! "${OS_NAME}" == "linux-ppc64le" ] && [ ! "${OS_NAME}" == "linux-s390x" ]; then
+    if [ ! "${OS_NAME}" == "linux-ppc64le" ] && [ ! "${OS_NAME}" == "linux-s390x" ]; then
       printf "[requires]
       libxml2/2.9.9
       libiconv/1.15" >> conanfile.txt;
     fi;
-    if [ "${TRAVIS_OS_NAME}" == "osx" ]; then
-      printf "[requires]
-      bzip2/1.0.8
-      libxml2/2.9.9
-      libiconv/1.15
-      qt/5.12.7@bincrafters/stable
-      bison/3.3.2@bincrafters/stable 
-      [options]
-      qt:shared=True" >> conanfile.txt;
-    fi;
-  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then
-      pip install --quiet --user conan;
-    fi;
-  - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then
-      pip install --upgrade pip;
-      pip install --quiet conan;
-
-      curl -O -L http://mirrors.ctan.org/support/epstopdf.zip;
-      unzip epstopdf.zip;
-      mkdir -p /Users/travis/Library/TeX/texbin/;
-      mv epstopdf/epstopdf.pl /Users/travis/Library/TeX/texbin/epstopdf;
-      chmod a+x /Users/travis/Library/TeX/texbin/epstopdf;
-      rm -rf epstopdf*;
-      export PATH="/Users/travis/Library/TeX/texbin:/Library/TeX/texbin:$PATH";
-    fi;
   - if [ ! "${OS_NAME}" == "linux-ppc64le" ] && [ ! "${OS_NAME}" == "linux-s390x" ]; then
+      pip install --quiet --user conan;
       conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan;
       conan install . -g virtualrunenv --build missing --update;
       source activate_run.sh;
@@ -118,7 +86,5 @@ script:
   - cmake --version;
   - cmake -G "Unix Makefiles" -Dbuild_doc=ON -Dbuild_wizard=ON ..
   - make
-  - if [ ! "${TRAVIS_OS_NAME}" == "osx" ]; then
-      make tests;
-      make docs;
-    fi;
+  - make tests
+  - make docs

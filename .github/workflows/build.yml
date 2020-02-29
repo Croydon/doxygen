@@ -1,0 +1,42 @@
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: macos-10.15
+    name: macOS build
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-python@v1
+        with:
+          python-version: '3.8'
+      - name: Install Dependencies
+        run: |
+          brew install ghostscript
+          brew cask install mactex-no-gui
+          pip install --quiet conan;
+          conan user
+          conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan;
+          printf "[requires]
+          bzip2/1.0.8
+          libxml2/2.9.9
+          libiconv/1.15
+          qt/5.12.7@bincrafters/stable
+          bison/3.3.2@bincrafters/stable 
+          [options]
+          qt:shared=True" >> conanfile.txt;
+          curl -O -L http://mirrors.ctan.org/support/epstopdf.zip
+          unzip epstopdf.zip
+          mkdir -p /Users/travis/Library/TeX/texbin/
+          mv epstopdf/epstopdf.pl /Users/travis/Library/TeX/texbin/epstopdf
+          chmod a+x /Users/travis/Library/TeX/texbin/epstopdf
+          rm -rf epstopdf*
+          conan install . -g virtualrunenv --build missing --update;
+      - name: Build Doxygen
+        run: |
+          export PATH="/Users/travis/Library/TeX/texbin:/Library/TeX/texbin:$PATH"
+          source activate_run.sh
+          mkdir build
+          cd build
+          cmake --version
+          cmake -G "Unix Makefiles" -Dbuild_doc=ON -Dbuild_wizard=ON ..
+          make
