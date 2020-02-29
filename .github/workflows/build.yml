@@ -20,8 +20,9 @@ jobs:
           bzip2/1.0.8
           libxml2/2.9.9
           libiconv/1.15
-          qt/5.12.7@bincrafters/stable
-          bison/3.3.2@bincrafters/stable
+          qt/5.14.1@bincrafters/stable
+          bison/3.4.1@bincrafters/stable
+          flex/2.6.4@bincrafters/stable 
           [options]
           qt:shared=True" >> conanfile.txt;
           curl -O -L http://mirrors.ctan.org/support/epstopdf.zip
