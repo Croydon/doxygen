@@ -37,8 +37,8 @@ install:
   - pip install conan
   - ps: |
      "[requires]
-      libxml2/2.9.8@bincrafters/stable
-      winflexbison/2.5.16@bincrafters/stable" | Out-File -Encoding ASCII -FilePath conanfile.txt
+      libxml2/2.9.9
+      winflexbison/2.5.21@bincrafters/stable" | Out-File -Encoding ASCII -FilePath conanfile.txt
   - conan install . -g virtualrunenv --build missing
   - activate_run.bat
 
