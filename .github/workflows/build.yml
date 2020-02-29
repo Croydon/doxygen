@@ -15,7 +15,7 @@ jobs:
           brew cask install mactex-no-gui
           pip install --quiet conan;
           conan user
-          conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan;
+          conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
           printf "[requires]
           bzip2/1.0.8
           libxml2/2.9.9
@@ -31,7 +31,7 @@ jobs:
           mv epstopdf/epstopdf.pl ~/Library/TeX/texbin/epstopdf
           chmod a+x ~/Library/TeX/texbin/epstopdf
           rm -rf epstopdf*
-          conan install . -g virtualrunenv --build missing --update;
+          conan install . -g virtualrunenv --build missing
       - name: Build Doxygen
         run: |
           export PATH="~/Library/TeX/texbin:/Library/TeX/texbin:$PATH"

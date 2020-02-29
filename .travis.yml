@@ -75,7 +75,7 @@ before_script:
       flex/2.6.4@bincrafters/stable" >> conanfile.txt;
       pip install --quiet --user conan;
       conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan;
-      conan install . -g virtualrunenv --build missing --update;
+      conan install . -g virtualrunenv --build missing;
     fi;
 
 script:
