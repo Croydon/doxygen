@@ -272,7 +272,7 @@ jobs:
       if: matrix.config.os != 'windows-latest'
 
     - name: Check tool versions (Windows)
-      shell: bash
+      shell: cmd
       run: |
         ./conan/conanrun.bat
         ./conan/conanbuild.bat
