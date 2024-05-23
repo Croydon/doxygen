@@ -348,6 +348,8 @@ jobs:
     - name: Run tests (Linux / MacOS)
       shell: cmake -P {0}
       run: |
+        ./conan/conanrun.sh
+        ./conan/conanbuild.sh
         set(ENV{CTEST_OUTPUT_ON_FAILURE} "ON")
 
         execute_process(
@@ -364,6 +366,8 @@ jobs:
     - name: Run tests (Windows)
       shell: cmake -P {0}
       run: |
+        ./conan/conanrun.bat
+        ./conan/conanbuild.bat
         set(ENV{CTEST_OUTPUT_ON_FAILURE} "ON")
 
         execute_process(
