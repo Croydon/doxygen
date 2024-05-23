@@ -78,7 +78,7 @@ jobs:
             os: windows-latest,
             build_type: "Debug", cc: "cl", cxx: "cl",
             build_gen: "Ninja",
-            cmake_extra_opts: "-D CMAKE_POLICY_DEFAULT_CMP0091=NEW", # not required anymore if min required CMake is >= 3.15
+            cmake_extra_opts: "-D CMAKE_POLICY_DEFAULT_CMP0091=NEW", # For Conan, not required anymore if min required CMake is >= 3.15
             conan_config_specific_deps: "--requires winflexbison/2.5.25"
           }
         - {
@@ -86,7 +86,7 @@ jobs:
             os: windows-latest,
             build_type: "Release", cc: "cl", cxx: "cl",
             build_gen: "Ninja",
-            cmake_extra_opts: "-D CMAKE_POLICY_DEFAULT_CMP0091=NEW",  # not required anymore if min required CMake is >= 3.15
+            cmake_extra_opts: "-D CMAKE_POLICY_DEFAULT_CMP0091=NEW",  # For Conan, not required anymore if min required CMake is >= 3.15
             conan_config_specific_deps: "--requires winflexbison/2.5.25"
           }
     steps:
@@ -224,12 +224,16 @@ jobs:
 
     - name: Run Conan Environment (Linux / MacOS)
       run: |
-        sudo ./conan/conanbuild.sh
+        pwd
+        ls -al conan
+        ./conan/conanrun.sh
+        ./conan/conanbuild.sh
       if: matrix.config.os != 'windows-latest'
 
     - name: Run Conan Environment (Windows)
       shell: cmd
       run: |
+        ./conan/conanrun.bat
         ./conan/conanbuild.bat
       if: matrix.config.os == 'windows-latest'
 
