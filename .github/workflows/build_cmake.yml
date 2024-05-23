@@ -104,7 +104,7 @@ jobs:
         sudo apt update
         sudo update-alternatives --install /usr/bin/cc cc /usr/bin/${{ matrix.config.cc }} 100
         sudo update-alternatives --install /usr/bin/c++ c++ /usr/bin/${{ matrix.config.cxx }} 100
-      if: matrix.config.os == 'ubuntu-20.04'
+      if: startsWith(matrix.config.os,'ubuntu-')
 
     - name: Install Python
       uses: actions/setup-python@v5
@@ -119,7 +119,7 @@ jobs:
         awk -v build_type="${{ matrix.config.build_type }}" 'BEGIN{FS=OFS="="} /^build_type/{$2=build_type}1' $(conan profile path default) > temp && mv temp $(conan profile path default)
         conan profile show -pr:a default
 
-    - name: Install libiconv, flex, bison
+    - name: Install libiconv, flex, bison, xmllint
       shell: bash
       run: |
         conan install -pr:h default -pr:b default --build missing -g CMakeDeps -g CMakeToolchain --output-folder conan \
@@ -139,6 +139,17 @@ jobs:
         echo "/Library/TeX/texbin/" >> $GITHUB_PATH
       if: matrix.config.os == 'macos-13'
 
+    - name: Install LaTeX (Windows)
+      uses: teatimeguest/setup-texlive-action@v3
+      with:
+        packages: >-
+          scheme-medium
+          collection-latexextra
+          babel-dutch
+          cjk
+          bibtex
+      if: matrix.config.os == 'windows-latest'
+
     - name: Install libclang (Ubuntu 20.04)
       run: |
         sudo apt remove llvm-8 clang-8 libclang-common-8-dev clang-format-8 libllvm8
@@ -157,23 +168,12 @@ jobs:
         ls -al /etc/alternatives/clang++
         which clang++
         clang++ -v
-      if: matrix.config.os == 'ubuntu-20.04'
+      if: startsWith(matrix.config.os,'ubuntu-')
 
     - name: Install libxapian (Ubuntu 20.04)
       run: |
         sudo apt install libxapian-dev
-      if: matrix.config.os == 'ubuntu-20.04'
-
-    - name: Install LaTeX (Windows)
-      uses: teatimeguest/setup-texlive-action@v3
-      with:
-        packages: >-
-          scheme-medium
-          collection-latexextra
-          babel-dutch
-          cjk
-          bibtex
-      if: matrix.config.os == 'windows-latest'
+      if: startsWith(matrix.config.os,'ubuntu-')
 
     - name: Install Ghostscript (Linux)
       run: |
