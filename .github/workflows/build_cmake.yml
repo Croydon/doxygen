@@ -112,7 +112,8 @@ jobs:
       shell: bash
       run: |
         conan install -pr:h default -pr:b default --build missing -g CMakeDeps -g CMakeToolchain --output-folder conan \
-        --requires libiconv/1.17
+        --requires libiconv/1.17 ${{matrix.config.conan_config_specific_deps}}
+        cat conan/conan_toolchain.cmake
 
     - name: Install LaTeX (Linux)
       run: |
