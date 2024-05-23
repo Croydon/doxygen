@@ -35,7 +35,7 @@ jobs:
             build_type: "Release", cc: "clang", cxx: "clang++",
             build_gen: "Unix Makefiles",
             cmake_extra_opts: "-Duse_libclang=YES -Dstatic_libclang=YES -Duse_libc++=NO",
-            conan_config_specific_deps: "--requires bison/3.8.2 --requires flex/2.6.4 --requires libxml2/2.12.6"
+            conan_config_specific_deps: "--requires flex/2.6.4 --requires libxml2/2.12.6"
           }
         - {
             name: "Ubuntu Latest Clang Debug",
@@ -43,21 +43,21 @@ jobs:
             build_type: "Debug", cc: "clang", cxx: "clang++",
             build_gen: "Unix Makefiles",
             cmake_extra_opts: "-Duse_libclang=YES -Dstatic_libclang=YES -Duse_libc++=NO",
-            conan_config_specific_deps: "--requires bison/3.8.2 --requires flex/2.6.4 --requires libxml2/2.12.6"
+            conan_config_specific_deps: "--requires flex/2.6.4 --requires libxml2/2.12.6"
           }
         - {
             name: "macOS Latest Release (Intel)",
             os: macos-13,
             build_type: "Release", cc: "clang", cxx: "clang++",
             build_gen: "Unix Makefiles",
-            conan_config_specific_deps: "--requires bison/3.8.2 --requires flex/2.6.4 --requires libxml2/2.12.6"
+            conan_config_specific_deps: "--requires flex/2.6.4 --requires libxml2/2.12.6"
           }
         - {
             name: "macOS Latest Debug (Intel)",
             os: macos-13,
             build_type: "Debug", cc: "clang", cxx: "clang++",
             build_gen: "Unix Makefiles",
-            conan_config_specific_deps: "--requires bison/3.8.2 --requires flex/2.6.4 --requires libxml2/2.12.6"
+            conan_config_specific_deps: "--requires flex/2.6.4 --requires libxml2/2.12.6"
           }
 #        - {
 #            name: "macOS Latest Release (Apple Silicon)",
@@ -126,6 +126,14 @@ jobs:
         -c tools.cmake.cmaketoolchain:generator="${{matrix.config.build_gen}}" ${{matrix.config.conan_config_specific_deps}} 
         # --requires libiconv/1.17 
         ls -al conan
+
+    - name: Install bison (MacOS)
+      run: |
+        brew update
+        brew install bison;
+        echo "$(brew --prefix bison)/bin" >> $GITHUB_PATH
+        #echo "/usr/local/opt/bison/bin" >> $GITHUB_PATH
+      if: matrix.config.os == 'macos-13'
 
     - name: Install LaTeX (Linux)
       run: |
