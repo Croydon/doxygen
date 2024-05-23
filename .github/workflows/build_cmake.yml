@@ -69,13 +69,15 @@ jobs:
             name: "Windows Latest MSVC Debug",
             os: windows-latest,
             build_type: "Debug", cc: "cl", cxx: "cl",
-            build_gen: "NMake Makefiles"
+            build_gen: "Ninja",
+            cmake_extra_opts: "-D CMAKE_POLICY_DEFAULT_CMP0091=NEW" # not required anymore if min required CMake is >= 3.15
           }
         - {
             name: "Windows Latest MSVC Release",
             os: windows-latest,
             build_type: "Release", cc: "cl", cxx: "cl",
-            build_gen: "NMake Makefiles"
+            build_gen: "Ninja",
+            cmake_extra_opts: "-D CMAKE_POLICY_DEFAULT_CMP0091=NEW"  # not required anymore if min required CMake is >= 3.15
           }
     steps:
     - name: Checkout doxygen
@@ -83,12 +85,34 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Install libiconv (Windows)
-      uses: suisei-cn/actions-download-file@v1
-      with:
-        url: "https://github.com/pffang/libiconv-for-Windows/releases/download/v1.16/libiconv-for-Windows_1.16.7z"
-        target: .
+    - name: Setup VS Environment (Windows)
+      uses: seanmiddleditch/gha-setup-vsdevenv@v4
       if: matrix.config.os == 'windows-latest'
+
+    - name: Setup Clang / GCC Environment (Linux)
+      run: |
+        sudo update-alternatives --install /usr/bin/cc cc /usr/bin/${{ matrix.config.cc }} 100
+        sudo update-alternatives --install /usr/bin/c++ c++ /usr/bin/${{ matrix.config.cxx }} 100
+      if: matrix.config.os == 'ubuntu-20.04'
+
+    - name: Install Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+
+    - name: Install Conan
+      shell: bash
+      run: |
+        pip install conan==2.*
+        conan profile detect
+        awk -v build_type="${{ matrix.config.build_type }}" 'BEGIN{FS=OFS="="} /^build_type/{$2=build_type}1' $(conan profile path default) > temp && mv temp $(conan profile path default)
+        conan profile show -pr:a default
+
+    - name: Install libiconv
+      shell: bash
+      run: |
+        conan install -pr:h default -pr:b default --build missing -g CMakeDeps -g CMakeToolchain --output-folder conan \
+        --requires libiconv/1.17
 
     - name: Install LaTeX (Linux)
       run: |
@@ -214,10 +238,6 @@ jobs:
         choco install graphviz.portable
       if: matrix.config.os == 'windows-latest'
 
-    - name: Setup VS Environment (Windows)
-      uses: seanmiddleditch/gha-setup-vsdevenv@master
-      if: matrix.config.os == 'windows-latest'
-
     - name: Refresh Env (Windows)
       run: |
         Import-Module $env:ChocolateyInstall\helpers\chocolateyProfile.psm1
@@ -297,6 +317,7 @@ jobs:
             -S .
             -B build
             -D CMAKE_BUILD_TYPE=${{ matrix.config.build_type }}
+            -D CMAKE_TOOLCHAIN_FILE=conan/conan_toolchain.cmake
             -G "${{ matrix.config.build_gen }}"
             -Dbuild_doc=YES
             -Dbuild_wizard=YES
@@ -410,4 +431,3 @@ jobs:
          publish_dir: build/doxygen_docs/html
          force_orphan: true
       if: ${{ github.event_name == 'push' && matrix.config.name == 'Ubuntu Latest GCC Release' }}
-
