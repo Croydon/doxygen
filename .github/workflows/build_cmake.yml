@@ -18,66 +18,76 @@ jobs:
             os: ubuntu-20.04,
             build_type: "Release", cc: "gcc", cxx: "g++",
             build_gen: "Unix Makefiles",
-            cmake_extra_opts: "-Dbuild_search=YES -Dbuild_app=YES -Dbuild_parse=YES"
+            cmake_extra_opts: "-Dbuild_search=YES -Dbuild_app=YES -Dbuild_parse=YES",
+            conan_config_specific_deps: "--requires bison/3.8.2 --requires flex/2.6.4"
           }
         - {
             name: "Ubuntu Latest GCC Debug",
             os: ubuntu-20.04,
             build_type: "Debug", cc: "gcc", cxx: "g++",
             build_gen: "Unix Makefiles",
-            cmake_extra_opts: "-Dbuild_search=YES -Dbuild_app=YES -Dbuild_parse=YES"
+            cmake_extra_opts: "-Dbuild_search=YES -Dbuild_app=YES -Dbuild_parse=YES",
+            conan_config_specific_deps: "--requires bison/3.8.2 --requires flex/2.6.4"
           }
         - {
             name: "Ubuntu Latest Clang Release",
             os: ubuntu-20.04,
             build_type: "Release", cc: "clang", cxx: "clang++",
             build_gen: "Unix Makefiles",
-            cmake_extra_opts: "-Duse_libclang=YES -Dstatic_libclang=YES -Duse_libc++=NO"
+            cmake_extra_opts: "-Duse_libclang=YES -Dstatic_libclang=YES -Duse_libc++=NO",
+            conan_config_specific_deps: "--requires bison/3.8.2 --requires flex/2.6.4"
           }
         - {
             name: "Ubuntu Latest Clang Debug",
             os: ubuntu-20.04,
             build_type: "Debug", cc: "clang", cxx: "clang++",
             build_gen: "Unix Makefiles",
-            cmake_extra_opts: "-Duse_libclang=YES -Dstatic_libclang=YES -Duse_libc++=NO"
+            cmake_extra_opts: "-Duse_libclang=YES -Dstatic_libclang=YES -Duse_libc++=NO",
+            conan_config_specific_deps: "--requires bison/3.8.2 --requires flex/2.6.4"
           }
         - {
             name: "macOS Latest Release (Intel)",
             os: macos-13,
             build_type: "Release", cc: "clang", cxx: "clang++",
-            build_gen: "Unix Makefiles"
+            build_gen: "Unix Makefiles",
+            conan_config_specific_deps: "--requires bison/3.8.2 --requires flex/2.6.4"
           }
         - {
             name: "macOS Latest Debug (Intel)",
             os: macos-13,
             build_type: "Debug", cc: "clang", cxx: "clang++",
-            build_gen: "Unix Makefiles"
+            build_gen: "Unix Makefiles",
+            conan_config_specific_deps: "--requires bison/3.8.2 --requires flex/2.6.4"
           }
 #        - {
 #            name: "macOS Latest Release (Apple Silicon)",
 #            os: macos-14-arm64,
 #            build_type: "Release", cc: "clang", cxx: "clang++",
-#            build_gen: "Unix Makefiles"
+#            build_gen: "Unix Makefiles",
+#            conan_config_specific_deps: "--requires bison/3.8.2 --requires flex/2.6.4"
 #          }
 #        - {
 #            name: "macOS Latest Debug (Apple Silicon)",
 #            os: macos-14-arm64,
 #            build_type: "Debug", cc: "clang", cxx: "clang++",
-#            build_gen: "Unix Makefiles"
+#            build_gen: "Unix Makefiles",
+#            conan_config_specific_deps: "--requires bison/3.8.2 --requires flex/2.6.4"
 #          }
         - {
             name: "Windows Latest MSVC Debug",
             os: windows-latest,
             build_type: "Debug", cc: "cl", cxx: "cl",
             build_gen: "Ninja",
-            cmake_extra_opts: "-D CMAKE_POLICY_DEFAULT_CMP0091=NEW" # not required anymore if min required CMake is >= 3.15
+            cmake_extra_opts: "-D CMAKE_POLICY_DEFAULT_CMP0091=NEW", # not required anymore if min required CMake is >= 3.15
+            conan_config_specific_deps: "--requires winflexbison/2.5.25"
           }
         - {
             name: "Windows Latest MSVC Release",
             os: windows-latest,
             build_type: "Release", cc: "cl", cxx: "cl",
             build_gen: "Ninja",
-            cmake_extra_opts: "-D CMAKE_POLICY_DEFAULT_CMP0091=NEW"  # not required anymore if min required CMake is >= 3.15
+            cmake_extra_opts: "-D CMAKE_POLICY_DEFAULT_CMP0091=NEW",  # not required anymore if min required CMake is >= 3.15
+            conan_config_specific_deps: "--requires winflexbison/2.5.25"
           }
     steps:
     - name: Checkout doxygen
@@ -108,13 +118,12 @@ jobs:
         awk -v build_type="${{ matrix.config.build_type }}" 'BEGIN{FS=OFS="="} /^build_type/{$2=build_type}1' $(conan profile path default) > temp && mv temp $(conan profile path default)
         conan profile show -pr:a default
 
-    - name: Install libiconv
+    - name: Install libiconv, flex, bison
       shell: bash
       run: |
         conan install -pr:h default -pr:b default --build missing -g CMakeDeps -g CMakeToolchain --output-folder conan \
-        -c tools.cmake.cmaketoolchain:generator="${{matrix.config.build_gen}}" \
-        --requires libiconv/1.17 ${{matrix.config.conan_config_specific_deps}}
-        cat conan/conan_toolchain.cmake
+        -c tools.cmake.cmaketoolchain:generator="${{matrix.config.build_gen}}" ${{matrix.config.conan_config_specific_deps}} 
+        # --requires libiconv/1.17 
 
     - name: Install LaTeX (Linux)
       run: |
@@ -203,20 +212,6 @@ jobs:
          brew install libxml2
       if: matrix.config.os == 'macos-13'
 
-    - name: Install bison (MacOS)
-      run: |
-        brew update
-        brew install bison;
-        echo "$(brew --prefix bison)/bin" >> $GITHUB_PATH
-        #echo "/usr/local/opt/bison/bin" >> $GITHUB_PATH
-      if: matrix.config.os == 'macos-13'
-
-    - name: Install bison/flex (Windows)
-      run: |
-        #Choco-Install -PackageName winflexbison
-        choco install winflexbison
-      if: matrix.config.os == 'windows-latest'
-
     - name: Install Graphviz (Linux)
       run: |
         sudo apt update
@@ -244,6 +239,17 @@ jobs:
       run: |
         Import-Module $env:ChocolateyInstall\helpers\chocolateyProfile.psm1
         refreshenv
+      if: matrix.config.os == 'windows-latest'
+
+    - name: Run Conan Environment (Linux / MacOS)
+      run: |
+        sudo ./conan/conanbuild.sh
+      if: matrix.config.os != 'windows-latest'
+
+    - name: Run Conan Environment (Windows)
+      shell: cmd
+      run: |
+        ./conan/conanbuild.bat
       if: matrix.config.os == 'windows-latest'
 
     - name: Install Qt 6
