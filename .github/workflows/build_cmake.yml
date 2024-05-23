@@ -222,21 +222,6 @@ jobs:
         refreshenv
       if: matrix.config.os == 'windows-latest'
 
-    - name: Run Conan Environment (Linux / MacOS)
-      run: |
-        pwd
-        ls -al conan
-        ./conan/conanrun.sh
-        ./conan/conanbuild.sh
-      if: matrix.config.os != 'windows-latest'
-
-    - name: Run Conan Environment (Windows)
-      shell: cmd
-      run: |
-        ./conan/conanrun.bat
-        ./conan/conanbuild.bat
-      if: matrix.config.os == 'windows-latest'
-
     - name: Install Qt 6
       uses: jurplel/install-qt-action@v4
       with:
@@ -252,6 +237,10 @@ jobs:
     - name: Check tool versions (Linux / MacOS)
       shell: bash
       run: |
+        chmod +x ./conan/conanrun.sh
+        chmod +x ./conan/conanbuild.sh
+        ./conan/conanrun.sh
+        ./conan/conanbuild.sh
         echo "=== perl ===";
         perl --version;
         echo "=== python ===";
@@ -277,6 +266,8 @@ jobs:
     - name: Check tool versions (Windows)
       shell: bash
       run: |
+        ./conan/conanrun.bat
+        ./conan/conanbuild.bat
         echo "=== perl ===";
         perl --version;
         echo "=== python ===";
