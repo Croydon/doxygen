@@ -19,7 +19,7 @@ jobs:
             build_type: "Release", cc: "gcc", cxx: "g++",
             build_gen: "Unix Makefiles",
             cmake_extra_opts: "-Dbuild_search=YES -Dbuild_app=YES -Dbuild_parse=YES",
-            conan_config_specific_deps: "--requires bison/3.8.2 --requires flex/2.6.4 --requires libxml2/2.12.6"
+            conan_config_specific_deps: "--requires flex/2.6.4 --requires libxml2/2.12.6"
           }
         - {
             name: "Ubuntu Latest GCC Debug",
@@ -27,7 +27,7 @@ jobs:
             build_type: "Debug", cc: "gcc", cxx: "g++",
             build_gen: "Unix Makefiles",
             cmake_extra_opts: "-Dbuild_search=YES -Dbuild_app=YES -Dbuild_parse=YES",
-            conan_config_specific_deps: "--requires bison/3.8.2 --requires flex/2.6.4 --requires libxml2/2.12.6"
+            conan_config_specific_deps: "--requires flex/2.6.4 --requires libxml2/2.12.6"
           }
         - {
             name: "Ubuntu Latest Clang Release",
@@ -64,14 +64,14 @@ jobs:
 #            os: macos-14-arm64,
 #            build_type: "Release", cc: "clang", cxx: "clang++",
 #            build_gen: "Unix Makefiles",
-#            conan_config_specific_deps: "--requires bison/3.8.2 --requires flex/2.6.4 --requires libxml2/2.12.6"
+#            conan_config_specific_deps: "--requires flex/2.6.4 --requires libxml2/2.12.6"
 #          }
 #        - {
 #            name: "macOS Latest Debug (Apple Silicon)",
 #            os: macos-14-arm64,
 #            build_type: "Debug", cc: "clang", cxx: "clang++",
 #            build_gen: "Unix Makefiles",
-#            conan_config_specific_deps: "--requires bison/3.8.2 --requires flex/2.6.4 --requires libxml2/2.12.6"
+#            conan_config_specific_deps: "--requires flex/2.6.4 --requires libxml2/2.12.6"
 #          }
         - {
             name: "Windows Latest MSVC Debug",
