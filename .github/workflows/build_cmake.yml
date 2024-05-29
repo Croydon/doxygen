@@ -127,16 +127,18 @@ jobs:
         pip install conan==2.*
         conan profile detect
         awk -v build_type="${{ matrix.config.build_type }}" 'BEGIN{FS=OFS="="} /^build_type/{$2=build_type}1' $(conan profile path default) > temp && mv temp $(conan profile path default)
-        echo -e '[conf]\ntools.cmake.cmaketoolchain:generator="${{matrix.config.build_gen}}"\n' >> $(conan profile path default) 
+        echo -e '[conf]\ntools.cmake.cmaketoolchain:generator=${{matrix.config.build_gen}}\n' >> $(conan profile path default) 
         conan profile show -pr:a default
 
     - name: Install libiconv, flex, bison, xmllint
       shell: bash
       run: |
         echo "::group::Conan install"
-        conan install -pr:h default -pr:b default --build missing -g CMakeDeps -g CMakeToolchain --output-folder conan \
-        -c tools.cmake.cmaketoolchain:generator="${{matrix.config.build_gen}}" ${{matrix.config.conan_config_specific_deps}} 
+        conan install -pr:h default -pr:b default -g CMakeDeps -g CMakeToolchain --output-folder conan \
+        --build missing ${{matrix.config.conan_config_specific_deps}} 
         # --requires libiconv/1.17 
+        echo "::endgroup::"
+        echo "::group::Generated files in /conan"
         ls -al conan
         echo "::endgroup::"
         echo "::group::CMakeUserPresets.json"
