@@ -111,7 +111,7 @@ jobs:
 
     - name: Setup Clang / GCC Environment (Linux)
       run: |
-        sudo apt update
+        sudo apt-get update
         sudo update-alternatives --install /usr/bin/cc cc /usr/bin/${{ matrix.config.cc }} 100
         sudo update-alternatives --install /usr/bin/c++ c++ /usr/bin/${{ matrix.config.cxx }} 100
       if: startsWith(matrix.config.os,'ubuntu-')
@@ -190,12 +190,12 @@ jobs:
 
     - name: Install libclang (Ubuntu 20.04)
       run: |
-        #sudo apt remove llvm-10 llvm-10-dev llvm-10-tools llvm-10-runtime clang-10 clang-format-10 libclang-common-10-dev libclang-cpp10 libclang1-10 libllvm10
-        sudo apt remove llvm-11 llvm-11-dev llvm-11-tools llvm-11-runtime clang-11 clang-format-11 libclang-common-11-dev libclang-cpp11 libclang1-11 libllvm11
-        sudo apt remove llvm-12 llvm-12-dev llvm-12-tools llvm-12-runtime clang-12 clang-format-12 libclang-common-12-dev libclang-cpp12 libclang1-12 libllvm12
+        #sudo apt-get remove llvm-10 llvm-10-dev llvm-10-tools llvm-10-runtime clang-10 clang-format-10 libclang-common-10-dev libclang-cpp10 libclang1-10 libllvm10
+        sudo apt-get remove llvm-11 llvm-11-dev llvm-11-tools llvm-11-runtime clang-11 clang-format-11 libclang-common-11-dev libclang-cpp11 libclang1-11 libllvm11
+        sudo apt-get remove llvm-12 llvm-12-dev llvm-12-tools llvm-12-runtime clang-12 clang-format-12 libclang-common-12-dev libclang-cpp12 libclang1-12 libllvm12
         sudo apt-get autoremove
         sudo apt-get clean
-        sudo apt install libclang-common-10-dev libclang-10-dev
+        sudo apt-get install libclang-common-10-dev libclang-10-dev
         apt list --installed | egrep '(clang|llvm)'
         ls -d /usr/lib/llvm-*/include/
         sudo update-alternatives --install /usr/bin/clang   clang   /usr/bin/clang-10   100
@@ -208,7 +208,7 @@ jobs:
 
     - name: Install libxapian (Ubuntu 20.04)
       run: |
-        sudo apt install libxapian-dev
+        sudo apt-get install libxapian-dev
       if: startsWith(matrix.config.os,'ubuntu-')
 
     - name: Install Ghostscript (Linux)
@@ -273,10 +273,10 @@ jobs:
     - name: Check tool versions (Linux / MacOS)
       shell: bash
       run: |
-        chmod +x ./conan/conanrun.sh
-        chmod +x ./conan/conanbuild.sh
-        ./conan/conanrun.sh
-        ./conan/conanbuild.sh
+        chmod +x ./conanrun.sh
+        chmod +x ./conanbuild.sh
+        ./conanrun.sh
+        ./conanbuild.sh
         echo "=== perl ===";
         perl --version;
         echo "=== python ===";
@@ -302,8 +302,8 @@ jobs:
     - name: Check tool versions (Windows)
       shell: cmd
       run: |
-        ./conan/conanrun.bat
-        ./conan/conanbuild.bat
+        ./conanrun.bat
+        ./conanbuild.bat
         echo "=== perl ===";
         perl --version;
         echo "=== python ===";
