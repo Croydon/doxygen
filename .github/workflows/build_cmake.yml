@@ -145,8 +145,8 @@ jobs:
         echo "::group::conan/CMakePresets.json"
         cat conan/CMakePresets.json
         echo "::endgroup::"
-        echo "::group::conan/cmake_toolchain.cmake"
-        cat conan/cmake_toolchain.cmake
+        echo "::group::cmake_toolchain.cmake"
+        cat cmake_toolchain.cmake
         echo "::endgroup::"
 
     - name: Install bison (MacOS)
