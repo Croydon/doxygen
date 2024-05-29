@@ -134,13 +134,13 @@ jobs:
       shell: bash
       run: |
         echo "::group::Conan install"
-        conan install -pr:h default -pr:b default -g CMakeDeps -g CMakeToolchain --output-folder conan \
+        conan install -pr:h default -pr:b default -g CMakeDeps -g CMakeToolchain \
         --build missing ${{matrix.config.conan_config_specific_deps}} 
         # --requires libiconv/1.17 
         echo "::endgroup::"
-        echo "::group::Generated files in /conan"
-        ls -al conan
-        echo "::endgroup::"
+        #echo "::group::Generated files in /conan"
+        #ls -al conan
+        #echo "::endgroup::"
         echo "::group::CMakeUserPresets.json"
         cat CMakeUserPresets.json
         echo "::endgroup::"
