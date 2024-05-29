@@ -144,8 +144,14 @@ jobs:
         echo "::group::CMakeUserPresets.json"
         cat CMakeUserPresets.json
         echo "::endgroup::"
+        echo "::group::CMakePresets.json"
+        cat CMakePresets.json
+        echo "::endgroup::"
         echo "::group::conan/CMakePresets.json"
         cat conan/CMakePresets.json
+        echo "::endgroup::"
+        echo "::group::conan_toolchain.cmake"
+        cat conan_toolchain.cmake
         echo "::endgroup::"
         echo "::group::conan/conan_toolchain.cmake"
         cat conan/conan_toolchain.cmake
@@ -184,8 +190,6 @@ jobs:
 
     - name: Install libclang (Ubuntu 20.04)
       run: |
-        sudo apt remove llvm-8 clang-8 libclang-common-8-dev clang-format-8 libllvm8
-        sudo apt remove llvm-9 llvm-9-dev llvm-9-tools llvm-9-runtime clang-9 libclang-common-9-dev clang-format-9 libllvm9
         #sudo apt remove llvm-10 llvm-10-dev llvm-10-tools llvm-10-runtime clang-10 clang-format-10 libclang-common-10-dev libclang-cpp10 libclang1-10 libllvm10
         sudo apt remove llvm-11 llvm-11-dev llvm-11-tools llvm-11-runtime clang-11 clang-format-11 libclang-common-11-dev libclang-cpp11 libclang1-11 libllvm11
         sudo apt remove llvm-12 llvm-12-dev llvm-12-tools llvm-12-runtime clang-12 clang-format-12 libclang-common-12-dev libclang-cpp12 libclang1-12 libllvm12
@@ -323,6 +327,7 @@ jobs:
       if: matrix.config.os == 'windows-latest'
 
     - name: Configure
+      shell: bash
       run: |
         cmake \
           -S . \
@@ -334,6 +339,7 @@ jobs:
 
     - name: Build
       id: build
+      shell: bash
       run: |
         cmake --build build --preset ${{ matrix.config.cmake_preset }} \
           RESULT_VARIABLE result \
