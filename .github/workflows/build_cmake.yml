@@ -126,7 +126,7 @@ jobs:
       run: |
         pip install conan==2.*
         conan profile detect
-        awk -v build_type="${{ matrix.config.build_type }}" 'BEGIN{FS=OFS="="} /^build_type/{$2=build_type}1' $(conan profile path default) > temp && mv temp $(conan profile path default)
+        conan config set profiles.default:build_type=${{ matrix.config.build_type }}
         conan profile show -pr:a default
 
     - name: Install libiconv, flex, bison, xmllint
@@ -143,6 +143,9 @@ jobs:
         echo "::endgroup::"
         echo "::group::conan/CMakePresets.json"
         cat conan/CMakePresets.json
+        echo "::endgroup::"
+        echo "::group::conan/cmake_toolchain.cmake"
+        cat conan/cmake_toolchain.cmake
         echo "::endgroup::"
 
     - name: Install bison (MacOS)
