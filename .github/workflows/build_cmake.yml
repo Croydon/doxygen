@@ -126,6 +126,7 @@ jobs:
         -c tools.cmake.cmaketoolchain:generator="${{matrix.config.build_gen}}" ${{matrix.config.conan_config_specific_deps}} 
         # --requires libiconv/1.17 
         ls -al conan
+        cat CMakePresets.json
 
     - name: Install bison (MacOS)
       run: |
