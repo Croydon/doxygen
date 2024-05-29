@@ -128,6 +128,7 @@ jobs:
         ls -al conan
         cat CMakePresets.json
         cat CMakeUserPresets.json
+        cat conan/CMakePresets.json
 
     - name: Install bison (MacOS)
       run: |
