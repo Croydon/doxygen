@@ -127,7 +127,7 @@ jobs:
         pip install conan==2.*
         conan profile detect
         awk -v build_type="${{ matrix.config.build_type }}" 'BEGIN{FS=OFS="="} /^build_type/{$2=build_type}1' $(conan profile path default) > temp && mv temp $(conan profile path default)
-        echo -e '[conf]\ntools.cmake.cmaketoolchain:generator="${{matrix.config.build_gen}}"\n' > $(conan profile path default) 
+        echo -e '[conf]\ntools.cmake.cmaketoolchain:generator="${{matrix.config.build_gen}}"\n' >> $(conan profile path default) 
         conan profile show -pr:a default
 
     - name: Install libiconv, flex, bison, xmllint
