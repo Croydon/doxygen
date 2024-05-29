@@ -127,6 +127,7 @@ jobs:
         pip install conan==2.*
         conan profile detect
         conan config set profiles.default:build_type=${{ matrix.config.build_type }}
+        conan config set profiles.default:conf.tools.cmake.cmaketoolchain:generator="${{matrix.config.build_gen}}"
         conan profile show -pr:a default
 
     - name: Install libiconv, flex, bison, xmllint
