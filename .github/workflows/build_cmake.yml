@@ -138,7 +138,7 @@ jobs:
         --build missing ${{matrix.config.conan_config_specific_deps}} 
         # --requires libiconv/1.17 
         echo "::endgroup::"
-        echo "::group::Generated files in /conan"
+        echo "::group::Generated files in ./"
         ls -al .
         echo "::endgroup::"
         #echo "::group::CMakeUserPresets.json"
@@ -147,15 +147,9 @@ jobs:
         echo "::group::CMakePresets.json"
         cat CMakePresets.json
         echo "::endgroup::"
-        #echo "::group::conan/CMakePresets.json"
-        #cat conan/CMakePresets.json
-        #echo "::endgroup::"
         echo "::group::conan_toolchain.cmake"
         cat conan_toolchain.cmake
         echo "::endgroup::"
-        #echo "::group::conan/conan_toolchain.cmake"
-        #cat conan/conan_toolchain.cmake
-        #echo "::endgroup::"
 
     - name: Install bison (MacOS)
       run: |
@@ -341,12 +335,8 @@ jobs:
       id: build
       shell: bash
       run: |
-        cmake --build build --preset ${{ matrix.config.cmake_preset }} \
-          RESULT_VARIABLE result \
-          OUTPUT_VARIABLE output \
-          ERROR_VARIABLE output \
-          ECHO_OUTPUT_VARIABLE ECHO_ERROR_VARIABLE
-        ::set-output name={output}::{output}
+        cmake --build build --preset ${{ matrix.config.cmake_preset }} | tee build.log
+        ::set-output name={output}::$(cat build.log)
 
     - name: Show CMake build errors on summary page
       if: steps.build.outcome == 'failure'
