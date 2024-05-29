@@ -127,6 +127,7 @@ jobs:
         # --requires libiconv/1.17 
         ls -al conan
         cat CMakePresets.json
+        cat CMakeUserPresets.json
 
     - name: Install bison (MacOS)
       run: |
