@@ -291,6 +291,8 @@ jobs:
         dot -V;
         echo "=== ghostscript ===";
         gs --version;
+        echo "=== Qt ===";
+        qmake -v;
       if: matrix.config.os != 'windows-latest'
 
     - name: Check tool versions (Windows)
@@ -318,6 +320,8 @@ jobs:
         dot -V;
         echo "=== ghostscript ===";
         gswin64c --version;
+        echo "=== Qt ===";
+        qmake -v;
       if: matrix.config.os == 'windows-latest'
 
     - name: Configure
@@ -356,11 +360,9 @@ jobs:
     - name: Run tests (Linux / MacOS)
       shell: cmake -P {0}
       run: |
-        set(ENV{CTEST_OUTPUT_ON_FAILURE} "ON")
-
         execute_process(
           COMMAND
-            cmake -E env TEST_FLAGS="--xml --xmlxsd --xhtml --qhp --docbook --rtf"
+            cmake -E env CTEST_OUTPUT_ON_FAILURE=ON TEST_FLAGS="--xml --xmlxsd --xhtml --qhp --docbook --rtf"
             cmake --build build --target tests --preset ${{ matrix.config.cmake_preset }}
           RESULT_VARIABLE result
         )
@@ -372,11 +374,9 @@ jobs:
     - name: Run tests (Windows)
       shell: cmake -P {0}
       run: |
-        set(ENV{CTEST_OUTPUT_ON_FAILURE} "ON")
-
         execute_process(
           COMMAND
-            cmake -E env TEST_FLAGS="--xml --xmlxsd --xhtml --qhp --docbook --rtf --pdf"
+            cmake -E env CTEST_OUTPUT_ON_FAILURE=ON TEST_FLAGS="--xml --xmlxsd --xhtml --qhp --docbook --rtf --pdf"
             cmake --build build --target tests --preset ${{ matrix.config.cmake_preset }}
           RESULT_VARIABLE result
         )
