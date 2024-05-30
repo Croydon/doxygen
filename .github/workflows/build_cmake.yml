@@ -344,7 +344,7 @@ jobs:
       id: build
       run: |
         cmake --build build --preset ${{ matrix.config.cmake_preset }} | tee build.log
-        ::set-output name={output}::$(cat build.log)
+        echo "::set-output name=output::$(cat build.log)"
 
     - name: Show CMake build errors on summary page
       if: steps.build.outcome == 'failure'
@@ -362,32 +362,25 @@ jobs:
         path: build/bin/
 
     - name: Run tests (Linux / MacOS)
-      shell: cmake -P {0}
+      id: tests
       run: |
-        execute_process(
-          COMMAND
-            cmake -E env CTEST_OUTPUT_ON_FAILURE=ON TEST_FLAGS="--xml --xmlxsd --xhtml --qhp --docbook --rtf"
-            cmake --build build --target tests --preset ${{ matrix.config.cmake_preset }}
-          RESULT_VARIABLE result
-        )
-        if (NOT result EQUAL 0)
-          message(FATAL_ERROR "Running tests failed!")
-        endif()
+        cmake -E env CTEST_OUTPUT_ON_FAILURE=ON TEST_FLAGS="--xml --xmlxsd --xhtml --qhp --docbook --rtf"
+        cmake --build build --target tests --preset ${{ matrix.config.cmake_preset }}
       if: matrix.config.os != 'windows-latest'
 
     - name: Run tests (Windows)
+      id: tests
+      run: |
+        cmake -E env CTEST_OUTPUT_ON_FAILURE=ON TEST_FLAGS="--xml --xmlxsd --xhtml --qhp --docbook --rtf --pdf"
+        cmake --build build --target tests --preset ${{ matrix.config.cmake_preset }}
+      if: matrix.config.os == 'windows-latest'
+
+    - name: Show CMake test error on summary page
+      if: steps.tests.outcome == 'failure'
       shell: cmake -P {0}
       run: |
-        execute_process(
-          COMMAND
-            cmake -E env CTEST_OUTPUT_ON_FAILURE=ON TEST_FLAGS="--xml --xmlxsd --xhtml --qhp --docbook --rtf --pdf"
-            cmake --build build --target tests --preset ${{ matrix.config.cmake_preset }}
-          RESULT_VARIABLE result
-        )
-        if (NOT result EQUAL 0)
-          message(FATAL_ERROR "Running tests failed!")
-        endif()
-      if: matrix.config.os == 'windows-latest'
+        message("::error::Running tests failed!")
+        message(FATAL_ERROR "Running tests failed!")
 
     - name: Generate documentation
       shell: cmake -P {0}
