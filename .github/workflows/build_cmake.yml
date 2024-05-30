@@ -337,6 +337,8 @@ jobs:
           -Dbuild_doc=YES \
           -Dbuild_wizard=YES \
           ${{ matrix.config.cmake_extra_opts }}
+        ls -la .
+        ls -la ./build
 
     - name: Build
       id: build
