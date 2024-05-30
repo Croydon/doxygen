@@ -328,7 +328,6 @@ jobs:
       if: matrix.config.os == 'windows-latest'
 
     - name: Configure
-      shell: bash
       run: |
         cmake \
           -S . \
@@ -343,7 +342,6 @@ jobs:
 
     - name: Build
       id: build
-      shell: bash
       run: |
         cmake --build build --preset ${{ matrix.config.cmake_preset }} | tee build.log
         ::set-output name={output}::$(cat build.log)
