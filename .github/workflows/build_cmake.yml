@@ -339,6 +339,7 @@ jobs:
           ${{ matrix.config.cmake_extra_opts }}
         ls -la .
         ls -la ./build
+        cat build/CMakeCache.txt
 
     - name: Build
       id: build
