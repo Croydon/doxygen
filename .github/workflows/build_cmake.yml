@@ -362,21 +362,21 @@ jobs:
         path: build/bin/
 
     - name: Run tests (Linux / MacOS)
-      id: tests
+      id: tests_unix
       run: |
         cmake -E env CTEST_OUTPUT_ON_FAILURE=ON TEST_FLAGS="--xml --xmlxsd --xhtml --qhp --docbook --rtf"
         cmake --build build --target tests --preset ${{ matrix.config.cmake_preset }}
       if: matrix.config.os != 'windows-latest'
 
     - name: Run tests (Windows)
-      id: tests
+      id: tests_win
       run: |
         cmake -E env CTEST_OUTPUT_ON_FAILURE=ON TEST_FLAGS="--xml --xmlxsd --xhtml --qhp --docbook --rtf --pdf"
         cmake --build build --target tests --preset ${{ matrix.config.cmake_preset }}
       if: matrix.config.os == 'windows-latest'
 
     - name: Show CMake test error on summary page
-      if: steps.tests.outcome == 'failure'
+      if: steps.tests_unix.outcome == 'failure' || steps.tests_win.outcome == 'failure'
       shell: cmake -P {0}
       run: |
         message("::error::Running tests failed!")
