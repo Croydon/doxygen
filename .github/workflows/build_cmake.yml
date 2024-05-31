@@ -124,7 +124,7 @@ jobs:
     - name: Install Conan
       shell: bash
       run: |
-        pip install conan==2.2.3
+        pip install conan==2.* # 2.2.3
         conan profile detect
         awk -v build_type="${{ matrix.config.build_type }}" 'BEGIN{FS=OFS="="} /^build_type/{$2=build_type}1' $(conan profile path default) > temp && mv temp $(conan profile path default)
         echo -e '[conf]\ntools.cmake.cmaketoolchain:generator=${{matrix.config.build_gen}}\n' >> $(conan profile path default) 
