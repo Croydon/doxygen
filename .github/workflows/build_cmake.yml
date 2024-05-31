@@ -334,7 +334,6 @@ jobs:
         ls -la .
         ls -la ./build
         cat build/CMakeCache.txt
-        cmake --build build --preset ${{ matrix.config.cmake_preset }}
 
     - name: Build
       id: build
