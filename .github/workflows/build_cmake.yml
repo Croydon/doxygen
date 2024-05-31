@@ -329,15 +329,8 @@ jobs:
       if: matrix.config.os == 'windows-latest'
 
     - name: Configure
-      shell: bash
       run: |
-        cmake \
-          -S . \
-          -B build \
-          --preset ${{ matrix.config.cmake_preset }} \
-          -Dbuild_doc=YES \
-          -Dbuild_wizard=YES \
-          ${{ matrix.config.cmake_extra_opts }}
+        cmake -S . -B build --preset ${{ matrix.config.cmake_preset }} -Dbuild_doc=YES -Dbuild_wizard=YES ${{ matrix.config.cmake_extra_opts }}
         ls -la .
         ls -la ./build
         cat build/CMakeCache.txt
@@ -345,7 +338,6 @@ jobs:
 
     - name: Build
       id: build
-      shell: bash
       run: |
         cmake --build build --preset ${{ matrix.config.cmake_preset }} | tee build.log
         echo "output=$(cat build.log)" >> $GITHUB_STATE
