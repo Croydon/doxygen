@@ -296,7 +296,6 @@ jobs:
         gs --version;
         echo "=== Qt ===";
         qmake -v;
-        df -h
       if: matrix.config.os != 'windows-latest'
 
     - name: Check tool versions (Windows)
@@ -329,13 +328,16 @@ jobs:
       if: matrix.config.os == 'windows-latest'
 
     - name: Configure
+      shell: bash
       run: |
         cmake -S . -B build --preset ${{ matrix.config.cmake_preset }} -Dbuild_doc=YES -Dbuild_wizard=YES ${{ matrix.config.cmake_extra_opts }}
-        cat build/CMakeCache.txt
 
     - name: Build
       id: build
+      shell: bash
       run: |
+        ls -la ./build
+        cat build/CMakeCache.txt
         cmake --build build --preset ${{ matrix.config.cmake_preset }} | tee build.log
         echo "output=$(cat build.log)" >> $GITHUB_STATE
 
@@ -357,15 +359,13 @@ jobs:
     - name: Run tests (Linux / MacOS)
       id: tests_unix
       run: |
-        cmake -E env CTEST_OUTPUT_ON_FAILURE=ON TEST_FLAGS="--xml --xmlxsd --xhtml --qhp --docbook --rtf"
-        cmake --build build --target tests --preset ${{ matrix.config.cmake_preset }}
+        cmake -E env CTEST_OUTPUT_ON_FAILURE=ON TEST_FLAGS="--xml --xmlxsd --xhtml --qhp --docbook --rtf" cmake --build build --target tests --preset ${{ matrix.config.cmake_preset }}
       if: matrix.config.os != 'windows-latest'
 
     - name: Run tests (Windows)
       id: tests_win
       run: |
-        cmake -E env CTEST_OUTPUT_ON_FAILURE=ON TEST_FLAGS="--xml --xmlxsd --xhtml --qhp --docbook --rtf --pdf"
-        cmake --build build --target tests --preset ${{ matrix.config.cmake_preset }}
+        cmake -E env CTEST_OUTPUT_ON_FAILURE=ON TEST_FLAGS="--xml --xmlxsd --xhtml --qhp --docbook --rtf --pdf" cmake --build build --target tests --preset ${{ matrix.config.cmake_preset }}
       if: matrix.config.os == 'windows-latest'
 
     - name: Show CMake test error on summary page
