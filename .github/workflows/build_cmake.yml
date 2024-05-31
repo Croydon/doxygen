@@ -331,8 +331,6 @@ jobs:
     - name: Configure
       run: |
         cmake -S . -B build --preset ${{ matrix.config.cmake_preset }} -Dbuild_doc=YES -Dbuild_wizard=YES ${{ matrix.config.cmake_extra_opts }}
-        ls -la .
-        ls -la ./build
         cat build/CMakeCache.txt
 
     - name: Build
