@@ -331,14 +331,14 @@ jobs:
       shell: bash
       run: |
         cmake -S . -B build --preset ${{ matrix.config.cmake_preset }} -Dbuild_doc=YES -Dbuild_wizard=YES ${{ matrix.config.cmake_extra_opts }}
+        ls -la ./build
+        cat build/CMakeCache.txt
 
     - name: Build
       id: build
       shell: bash
       run: |
-        ls -la ./build
-        cat build/CMakeCache.txt
-        cmake --build build --preset ${{ matrix.config.cmake_preset }} | tee build.log
+        cmake --build build --preset ${{ matrix.config.cmake_preset }} --verbose | tee build.log
         echo "output=$(cat build.log)" >> $GITHUB_STATE
 
     - name: Show CMake build errors on summary page
